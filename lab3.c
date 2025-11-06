@@ -18,6 +18,12 @@ int mx_j2 = -10000000;//типо минимальный элемент
 int locatemx = 0;
 
 char* str = (char*)malloc(sizeof(char) * 100);//создание динамической строки
+
+if (str == NULL) {
+    printf("MEMORY ERROR for dynamic string\n");
+    return 1;
+}// обработка корректности выделения памяти для динамической строки
+
 printf("Write name your file\n");
 scanf("%s", str);
 FILE *file = fopen(str, "r");
@@ -34,8 +40,20 @@ int n, m;
 fscanf(file, "%i %i", &n, &m);
 
 int **matrix = (int**)malloc(n * sizeof(int*));
+
+if (matrix == NULL) {
+    printf("MEMORY ERROR for big dynamic matrix\n");
+    return 1;
+} // обработка корректности выделения памяти для матрицы
+
 for (int i = 0; i < n; i++) {
     matrix[i] = (int*)malloc(m * sizeof(int));
+
+    if (matrix == NULL) {
+        printf("MEMORY ERROR for big dynamic string of matrix\n");
+        return 1;
+    } // обработка корректности выделения памяти для строк матрицы
+
     for (int j = 0; j < m; j++) {
         fscanf(file, "%i", &matrix[i][j]);
     }
