@@ -5,18 +5,18 @@
 
 long long cnt = 0;
 
-void update_arr(int *arr, int *cp, int n) {
+void update_arr(int *arr, int *cp, int n) { //функция перезаписи массива, для того, чтобы на тех же данных проводить 3 сортировки
     memcpy(arr, cp, n * sizeof(int));
 }
 
-void swap(int *x, int *y) {
+void swap(int *x, int *y) { //обобщенная функция для перестановки элементов(реализованная для bubble_sort and selection_sort)
     int cash = *x;
     *x = *y;
     *y = cash;
     cnt++;
 }
 
-void bubble_sort(int *arr, int n) {
+void bubble_sort(int *arr, int n) {//сортировка пузырьком
     int cash;
 
     for (int i = 0; i < n-1; i++) {
@@ -28,7 +28,7 @@ void bubble_sort(int *arr, int n) {
     }
 }
 
-void selection_sort(int arr[], int n) {
+void selection_sort(int arr[], int n) {//сортировка выбором
     int i, j, min_idx;
 
     for (i = 0; i < n - 1; i++) {
@@ -48,7 +48,7 @@ void merge(int arr[], int left, int mid, int right) {
     int n2 = right - mid;
 
     int *L = (int*)malloc(n1 * sizeof(int));
-    int *R = (int*)malloc(n2 * sizeof(int));
+    int *R = (int*)malloc(n2 * sizeof(int));// создание динамических массивов, т.к. данные большие
 
     for (i = 0; i < n1; i++)
         L[i] = arr[left + i];
@@ -84,10 +84,10 @@ void merge(int arr[], int left, int mid, int right) {
         cnt++;
     }
     free(L);
-    free(R);
+    free(R);//освобождение памяти
 }
 
-void merge_sort(int arr[], int left, int right) {
+void merge_sort(int arr[], int left, int right) {//сортировка слиянием и там спец. функция для нее выше
     if (left < right) {
         int mid = left + (right - left) / 2;
         merge_sort(arr, left, mid);
@@ -110,9 +110,9 @@ void time_excited(int *arr, int n, const char *str) {
         merge_sort(arr, 0, n-1);
     }
     t = clock() - t; 
-    double seconds = ((double)t)/CLOCKS_PER_SEC;
+    double seconds = ((double)t)/CLOCKS_PER_SEC; //подсчет времени исполнения одной из сортировок
     printf("Время исполнения сортировки %s for array with %i elements: %f секунд\n", str, n, seconds);
-    printf("Количество перестановок: %lld\n", cnt);
+    printf("Количество перестановок: %lld\n", cnt);//вывод перестановок и времени исполннения той или иной сортировки
 }
 
 
@@ -126,9 +126,9 @@ int main() {
     int *cp1 = (int*)malloc(sizeof(int) * 11);
     int *cp2 = (int*)malloc(sizeof(int) * 1001);
     int *cp3 = (int*)malloc(sizeof(int) * 10001);
-    int *cp4 = (int*)malloc(sizeof(int) * 100001);
+    int *cp4 = (int*)malloc(sizeof(int) * 100001);//выделение динамической памяти для массивов и их копий(для того, чтобы не потерять исходные сгенерированные данные)
 
-    int n1 = 10, n2 = 1000, n3 = 10000, n4 = 100000;
+    int n1 = 10, n2 = 1000, n3 = 10000, n4 = 100000;//создание переменных для размеров массивов(чтобы проще обращаться)
 
     for (int i = 0; i < n1; i++) {
         arr1[i] = rand();
@@ -148,7 +148,7 @@ int main() {
     for (int i = 0; i < n4; i++) {
         arr4[i] = rand();
         cp4[i] = arr4[i];
-    }
+    }//заполнение массивов и их копий
 
     time_excited(arr1, n1, "bubble_sort");
     update_arr(arr1, cp1, n1);
@@ -179,12 +179,12 @@ int main() {
     time_excited(arr4, n4, "selection_sort");
     update_arr(arr4, cp4, n4);
     time_excited(arr4, n4, "merge_sort");
-    printf("THE END OF PROGRAM");
+    printf("THE END OF PROGRAM");//реализация вывода данных + вновь заполнение массивов исходными (рандомно сгенерированными) данными
 
     free(arr1); free(cp1);
     free(arr2); free(cp2);
     free(arr3); free(cp3);
-    free(arr4); free(cp4);
+    free(arr4); free(cp4);//освобождение памяти
 
     return 0;
 }
