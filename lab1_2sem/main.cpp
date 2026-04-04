@@ -1,9 +1,10 @@
 #include "bd.hpp"
 
+using namespace bd;
+
 int main() {
 
     smart_array BD;
-    init_smart_array(&BD);
     set<int> uniq_ID;
     
     int k;
@@ -33,24 +34,28 @@ int main() {
         case 1: {
             cout << "Введите в следующем порядке: id(int), name(string), work(string), salary(int)\n";
             Emp e;
-            if (!(cin >> e.id >> e.name >> e.work >> e.salary)) {
+            if (!(cin >> e)) {
                 cout << "!      Input_Error      !\n";
                 cin.clear();
                 cin.ignore(10000, '\n');
                 break;
             }
-            while (!uniq_ID.insert(e.id).second) {
+            while (!uniq_ID.insert(e.getId()).second) {
                 cout << "Данный id уже есть, введите другой id(int)\n";
-                if (!(cin >> e.id)) {
+                int n_id;
+                if (!(cin >> n_id)) {
                     cin.clear();
                     cin.ignore(10000, '\n');
+                    
+                } else {
+                    e.setId(n_id);
                 }
             }
-            push_back(&BD, e);
+            BD.push_back(e);
             break;
         }
         case 2: {
-            print_db(&BD);
+            BD.print_db();
             break;
         }
         case 3: {
@@ -66,14 +71,14 @@ int main() {
                 cin.ignore(10000, '\n');
                 break;
             }
-            edit_element(&BD, index, id, name, work, salary);
+            BD.edit_element(index, id, name, work, salary);
             break;
         }
         case 4: {
             cout << "Введите индекс элемента, который хотите удалить\n";
             int index;
             cin >> index;
-            v_remove(&BD, index);
+            BD.v_remove(index);
             break;
         }
         case 5: {
@@ -81,21 +86,21 @@ int main() {
             char name[64];
             char work[64];
             cin >> name >> work;
-            find_name_work(&BD, name, work);
+            BD.find_name_work(name, work);
             break;
         }
         case 6: {
             cout << "Введите название файла(.bin), куда хотите сохранить БД\n";
             string str;
             cin >> str;
-            save_in_file(&BD, str);
+            BD.save_in_file(str);
             break;
         }
         case 7: {
             cout << "Введите название файла(.bin), откуда хотите считать данные в БД\n";
             string str;
             cin >> str;
-            read_in_file(&BD, str);
+            BD.read_in_file(str);
             }
         }
         cout << "0 - Выход\n";
@@ -110,7 +115,6 @@ int main() {
             break;
         }
     }
-    delete_v(&BD);
     cout << "End of the program";
     return 0;
 }

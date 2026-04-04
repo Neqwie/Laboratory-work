@@ -1,81 +1,59 @@
 #include "bd.hpp"
 
+namespace bd {
 
 
-void init_smart_array(smart_array *v){
-    v->capacity = 32;
-    v->size = 0;
-    v->arr = new Emp[v->capacity];
-    if (v->arr == nullptr) {
-        cout << "MEM_ERROR";
-        return;
-    }
-}
+void smart_array::push_back(Emp value){
 
-
-
-void delete_v(smart_array *v){
-    delete[] v->arr;
-    v->size = 0;
-    v->capacity = 0;
-}
-
-
-
-void push_back(smart_array *v, Emp value){
-
-    if (v->capacity == v->size) {
-        unsigned int new_capacity = v->capacity * 2;
+    if (capacity == size) {
+        unsigned int new_capacity = capacity * 2;
         Emp* new_arr = new Emp[new_capacity];
         if (new_arr == nullptr) { 
             cout << "MEM_ERROR"; 
             return;
         }
-        for (unsigned int i = 0; i < v->size; i++) {
-            new_arr[i] = v->arr[i];
+        for (unsigned int i = 0; i < size; i++) {
+            new_arr[i] = arr[i];
         }
-        delete[] v->arr;
-        v->arr = new_arr;
-        v->capacity = new_capacity;
+        delete[] arr;
+        arr = new_arr;
+        capacity = new_capacity;
         
     }
-    v->arr[v->size] = value;
-    v->size++;
+    arr[size] = value;
+    size++;
 }
 
 
 
-void v_remove(smart_array *v, int id){
+void smart_array::v_remove(int id){
 
-    if (id >= v->size) {
+    if (id >= size) {
         cout << "UNCORRECT INDEX";
         return;
     }    
-    if (v->arr == nullptr) {
+    if (arr == nullptr) {
         cout << "VOID_ERROR";
         return;
     }
-    for (int i = id; i < v->size - 1; i++) {
-        v->arr[i] = v->arr[i + 1];
+    for (int i = id; i < size - 1; i++) {
+        arr[i] = arr[i + 1];
     }
 
-    v->size--;
+    size--;
 }
 
 
 
-void print_db(smart_array *v){
+void smart_array::print_db(){
 
-    if (v == nullptr || v->arr == nullptr) {
+    if (arr == nullptr) {
         cout << "STRUCT IS NULL";
         return;
     }
     cout << "---------------\n";
-    for (int i = 0; i < v->size; i++) {
-        cout << "ID: " << v->arr[i].id << "\n";
-        cout << "Name: " << v->arr[i].name << "\n";
-        cout << "Work: " << v->arr[i].work <<  "\n";
-        cout << "Salary: " << v->arr[i].salary << "\n";
+    for (int i = 0; i < size; i++) {
+        cout << arr[i];
         cout << "---------------\n";
     }
     cout << "\n";
@@ -83,24 +61,21 @@ void print_db(smart_array *v){
 
 
 
-void find_name_work(smart_array *v, char* findname, char* findwork) {
+void smart_array::find_name_work(string findname, string findwork) {
 
-    if (v == nullptr || v->arr == nullptr) {
+    if (arr == nullptr) {
         cout << "STRUCT IS NULL";
         return;
     }
     int cnt = 0;
-    for (int i = 0; i < v->size; i++) {
-        bool nameeq = (std::strcmp(findname, v->arr[i].name) == 0);
-        bool workeq = (std::strcmp(findwork, v->arr[i].work) == 0);
+    for (int i = 0; i < size; i++) {
+        bool nameeq = (findname == arr[i].getName());
+        bool workeq = (findwork == arr[i].getWork());
         if (nameeq  && workeq) {
             cout << "###############\n";
             cout << "Elements was found\n";
             cout << "index of element: " << i << "\n";
-            cout << "ID: " << v->arr[i].id << "\n";
-            cout << "Name: " << v->arr[i].name << "\n";
-            cout << "Work: " << v->arr[i].work <<  "\n";
-            cout << "Salary: " << v->arr[i].salary << "\n";
+            cout << arr[i];
             cout << "###############\n";
             cnt++;
         }
@@ -113,14 +88,14 @@ void find_name_work(smart_array *v, char* findname, char* findwork) {
 }
 
 
-void edit_element(smart_array *v, int index, int id, char* name, char* work, int salary) {
+void smart_array::edit_element(int index, int id, string name, string work, int salary) {
 
-    if (v == nullptr || v->arr == nullptr) {
+    if (arr == nullptr) {
         cout << "STRUCT IS NULL\n";
         return;
     }
 
-    if (index >= v->size || index < 0) {
+    if (index >= size || index < 0) {
         cout << "OUT OF RANGE\n";
         return;
     }
@@ -144,62 +119,86 @@ void edit_element(smart_array *v, int index, int id, char* name, char* work, int
     }
 
     if (flag_id) {
-        v->arr[index].id = id;
+        arr[index].setId(id);
     }
     if (flag_name) {
-        fill(begin(v->arr[index].name), end(v->arr[index].name), '\0');
-        copy_n(name, min(strlen(name), sizeof(v->arr[index].name) - 1), v->arr[index].name);
+        arr[index].setName(name);
     }
     if (flag_work) {
-        fill(begin(v->arr[index].work), end(v->arr[index].work), '\0');
-        copy_n(work, min(strlen(work), sizeof(v->arr[index].work) - 1), v->arr[index].work);
+        arr[index].setWork(work);
     }
     if (flag_salary) {
-        v->arr[index].salary = salary;
+        arr[index].setSalary(salary);
     }
 }
 
 
 
-void save_in_file(smart_array *v, string& str) {
+void smart_array::save_in_file(string& str) {
 
-    ofstream f(str, ios::binary);
-    if (!f.is_open()) {
-        std::cout << "File_Error";
-        return;
+    std::ofstream f(str, std::ios::binary);
+    if (!f) { 
+        std::cout << "File_Error\n"; 
+        return; 
     }
 
-    f.write(reinterpret_cast<const char*>(&v->size), sizeof(v->size));
-    f.write(reinterpret_cast<const char*>(v->arr), sizeof(Emp) * v->size);
+    f.write(reinterpret_cast<const char*>(&size), sizeof(size));
 
-    cout << "Save success\n";
+    for (unsigned int i = 0; i < size; ++i) {
+        Emp& e = arr[i];
+
+        int id = e.getId();
+        int salary = e.getSalary();
+        f.write(reinterpret_cast<const char*>(&id), sizeof(id));
+        f.write(reinterpret_cast<const char*>(&salary), sizeof(salary));
+
+        const std::string& name = e.getName();
+        size_t name_len = name.size();
+        f.write(reinterpret_cast<const char*>(&name_len), sizeof(name_len));
+        f.write(name.data(), name_len);
+
+        const std::string& work = e.getWork();
+        size_t work_len = work.size();
+        f.write(reinterpret_cast<const char*>(&work_len), sizeof(work_len));
+        f.write(work.data(), work_len);
+    }
+
+    std::cout << "Save success\n";
+
 }
 
-void read_in_file(smart_array *v, string& str) {
+void smart_array::read_in_file(string& str) {
 
-    if (v-> arr == nullptr) {
-        init_smart_array(v);
-    }
+    ifstream f(str, ios::binary);
+    if (!f) { cout << "File_Error\n"; return; }
 
-    std::ifstream f(str, std::ios::binary);
-    if (!f.is_open()) {
-        std::cout << "File_Error";
-        return;
-    }
-    v->size = 0;
-    unsigned int size = 0;
-    if (!f.read(reinterpret_cast<char*>(&size), sizeof(unsigned int))) {
-        return;
-    }
+    unsigned int new_size = 0;
+    f.read(reinterpret_cast<char*>(&new_size), sizeof(new_size));
 
-     for (unsigned int i = 0; i < size; i++) {
-        Emp emp;
-        if (!f.read(reinterpret_cast<char*>(&emp), sizeof(Emp))) {
-            std::cout << "Error reading employee " << i << "\n";
-            return;
-        }
-        push_back(v, emp);
-    }
+    size = 0;
+    for (unsigned int i = 0; i < new_size; i++) {
+        Emp e;
+        int id, salary;
+        f.read(reinterpret_cast<char*>(&id), sizeof(id));
+        f.read(reinterpret_cast<char*>(&salary), sizeof(salary));
+        e.setId(id);
+        e.setSalary(salary);
 
+        size_t name_len;
+        f.read(reinterpret_cast<char*>(&name_len), sizeof(name_len));
+        string name(name_len, ' ');
+        f.read(&name[0], name_len);
+        e.setName(name);
+
+        size_t work_len;
+        f.read(reinterpret_cast<char*>(&work_len), sizeof(work_len));
+        string work(work_len, ' ');
+        f.read(&work[0], work_len);
+        e.setWork(work);
+
+        push_back(e);
+    }
     cout << "Read from file\n";
+}
+
 }
