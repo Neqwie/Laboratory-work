@@ -30,40 +30,33 @@ public:
         id = 0;
         name = "";
         work = "";
+        salary = 0;
     }
 
-    int getId() {return id;}
-    string getName() {return name;}
-    string getWork() {return work;}
-    int getSalary() {return salary;}
+    const int &getId() const {return id;}
+    const string &getName() const {return name;}
+    const string &getWork() const {return work;}
+    const int &getSalary() const {return salary;}
 
-    void setId(int n_id) {
+    void setId(const int& n_id) {
         id = n_id;
     }
-    void setSalary(int n_s) {
+    void setSalary(const int& n_s) {
         salary = n_s;
     }
-    void setName(string n_name) {
+    void setName(const string& n_name) {
         name = n_name;
     }
-    void setWork(string n_work) {
+    void setWork(const string& n_work) {
         work = n_work;
     }
 
-    friend ostream& operator<<(ostream& out, const Emp& emp) {
-        out << "ID: " << emp.id << "\n";
-        out << "Name: " << emp.name << "\n";
-        out << "Work: " << emp.work << "\n";
-        out << "Salary: " << emp.salary << "\n";
-        return out;
-    }
-
-    friend istream& operator>>(istream& is, Emp& emp) {
-        is >> emp.id >> emp.name >> emp.work >> emp.salary;
-        return is;
-    }
+    friend ostream& operator<<(ostream& out, const Emp& emp);
+    friend istream& operator>>(istream& is, Emp& emp);
 
 };
+
+
 
 
 
@@ -91,7 +84,7 @@ public:
     void push_back(Emp value);
     void v_remove(int index);
     void print_db();
-    void find_name_work(string findname, string findwork);
+    void find_name_work(const string& findname, const string& findwork);
     void edit_element(int index, int id, string name, string work, int salary);
     void save_in_file(string& str);
     void read_in_file(string& str);

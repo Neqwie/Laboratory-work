@@ -2,6 +2,19 @@
 
 namespace bd {
 
+ostream& operator<<(ostream& out, const Emp& emp) {
+    out << "ID: " << emp.id << "\n";
+    out << "Name: " << emp.name << "\n";
+    out << "Work: " << emp.work << "\n";
+    out << "Salary: " << emp.salary << "\n";
+    return out;
+}
+
+istream& operator>>(istream& is, Emp& emp) {
+    is >> emp.id >> emp.name >> emp.work >> emp.salary;
+    return is;
+}
+
 
 void smart_array::push_back(Emp value){
 
@@ -61,7 +74,7 @@ void smart_array::print_db(){
 
 
 
-void smart_array::find_name_work(string findname, string findwork) {
+void smart_array::find_name_work(const string& findname, const string& findwork) {
 
     if (arr == nullptr) {
         cout << "STRUCT IS NULL";
